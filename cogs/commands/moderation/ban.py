@@ -16,22 +16,19 @@ class ban(commands.Cog):
             return
         
         else:
-            if user.name == "Bun":
-                msg = "You will be invited back in approximately 168 hours."
             
-            embed = discord.Embed(description = "On behalf of the cult leaders, you have been hereby banished from The Carrot Cult due to `{}`.\n{}".format(reason, msg), colour = discord.Colour(0xFF4759))
+            embed = discord.Embed(description = "On behalf of the cult leaders, you have been hereby banished from The Carrot Cult due to `{}`.".format(reason), colour = discord.Colour(0xFF4759))
             embed.add_field(value = "[Invite](https://discord.gg/QaPsH2c8kC)")
             embed.add_field(value = "[Appeal](https://forms.gle/Z7J2XgdgV4HHRRbP9)")
-            try:
-                await user.send(embed = embed)
             
+			try:
+                await user.send(embed = embed)
+				
             except:
                 return
             
             await user.ban(reason = "Banned by {} | ".format(ctx.author, reason))
-    
-    @commands.has_any_role("Moderator", "Admin", "owner guy")
-    @commands.command()
+			await ctx.send("User Banned!")
 
 
 def setup(client):
