@@ -8,7 +8,7 @@ Some swag multi-purpose bot that is guild specific at the moment, but a public v
 `;echo <text>` - Send a message as carrotbot.  
 `;git` - Links to this repository.  
 
-**Staff Commands**
+**Staff Commands**  
 `;mute <@user> [reason]` - Adds a role to a user which prevents them from speaking or typing.
 `;unmute <@user>` - Removes the muted role. (see `;mute`)  
 `;slowmode <time> [#channel]` - Sets a slowmode cooldown in a channel.
