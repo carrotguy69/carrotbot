@@ -20,6 +20,7 @@
 #    SOFTWARE.                                                                        #
 #                                                                                     #
 #######################################################################################
+
 import discord, asyncio, os
 from discord.ext import commands
 from discord import Activity, ActivityType
@@ -30,16 +31,21 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     print(f"* Online")
-    await client.change_presence(status =  discord.Status.online, activity = Activity(type = ActivityType.watching, name = "Type ;help"))
-    
+    await client.change_presence(status =  discord.Status.idle, activity = Activity(type = ActivityType.watching, name = "Type ;help"))
+
+guild = client.get_guild(726514695523008514)
+
 extensions = [
+            "cogs.events.welcome",
             "cogs.commands.fun.echo", 
-            "cogs.commands.moderation.mute", 
-            "cogs.events.welcome", 
-            "cogs.commands.moderation.nick", 
+            "cogs.commands.moderation.mute",
             "cogs.commands.info.git",
             "cogs.commands.info.helpcmd",
-            "cogs.events.errors"
+            "cogs.events.onmsg",
+            "cogs.commands.moderation.slowmode",
+            "cogs.commands.fun.party",
+            "cogs.events.starboard",
+            "cogs.commands.moderation.ban"
             ]
 
 if __name__ == '__main__':
