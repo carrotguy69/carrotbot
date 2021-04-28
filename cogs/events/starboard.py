@@ -8,7 +8,7 @@ class stars(commands.Cog):
 	@commands.Cog.listener()
 	async def on_raw_reaction_add(self, payload):
 		print("a")
-		starboard = resources.channels.grab_channel("Starboard")
+		starboard = resources.channels.grab_channel("starboard")
 
 		if payload.emoji.name == "⭐":
 			msg = await self.client.get_channel(payload.channel.id).fetch_message(payload.message_id)
