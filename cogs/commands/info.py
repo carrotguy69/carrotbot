@@ -15,5 +15,9 @@ class info(commands.Cog):
         else:
             await ctx.send(embed = discord.Embed(title = "{}'s {} avatar!".format(user, random.choice(adjectives)), color = user.colour))
 
+    @commands.command(aliases = ["staff"])
+    async def apply(self, ctx):
+        await ctx.send("Here is the link to try out our staff team. Good Luck!\nhttps://forms.gle/s2qnKWdkLyak3EJe6")
+
 def setup(client):
     client.add_cog(info(client))
