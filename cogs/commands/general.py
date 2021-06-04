@@ -224,4 +224,4 @@ class info(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(info(client))
+    client.add_cog(general(client))
