@@ -1,7 +1,7 @@
 #######################################################################################
 #                                                                                     #
 #    MIT License                                                                      #
-#    Copyright © 2021 The Carrot Cult Developer Team                                  #
+#    Copyright © 2021 The Carrot Master                                               #
 #                                                                                     #
 #    Permission is hereby granted, free of charge, to any person obtaining a copy     #
 #    of this software and associated documentation files (the "Software"), to deal    #
@@ -21,43 +21,33 @@
 #                                                                                     #
 #######################################################################################
 
-import discord, asyncio, os
+import discord
+import os
 from discord.ext import commands
 from discord import Activity, ActivityType
 
-client = commands.Bot(command_prefix=";", intents = discord.Intents.all())
+print("[◕] Booting...")
+
+client = commands.Bot(command_prefix = "^", intents = discord.Intents.all(), case_insensitive = True)
 client.remove_command('help')
 
 @client.event
 async def on_ready():
-    print(f"* Online")
-    await client.change_presence(status =  discord.Status.idle, activity = Activity(type = ActivityType.watching, name = "Type ;help"))
-
-guild = client.get_guild(726514695523008514)
+    print("[✅] Logged in as {0.user}".format(client))
+    await client.change_presence(status =  discord.Status.online, activity = Activity(type = ActivityType.watching, name = "Type ^help"))
 
 extensions = [
-            "cogs.events.welcome",
-            "cogs.commands.fun.echo", 
-            "cogs.commands.moderation.mute",
-            "cogs.commands.info.git",
-            "cogs.commands.info.helpcmd",
-            "cogs.events.onmsg",
-            "cogs.commands.moderation.slowmode",
-            "cogs.commands.fun.party",
-            "cogs.events.starboard",
-            "cogs.commands.moderation.ban"
+            "cogs.commands.general",
+            "cogs.commands.fun",
+            "cogs.commands.moderation",
+            "cogs.commands.monee"
             ]
 
 if __name__ == '__main__':
     for ext in extensions:
         client.load_extension(ext)
-        print("+ loaded extension {}".format(ext))
+        print("[+] loaded extension {}".format(ext))
 
-
-def read_token():
-    token = open(os.path.join(os.path.dirname(__file__), "token.txt")).readlines()
-    return token[0].strip()
-
-token = read_token()
+token = open(os.path.join(os.path.dirname(__file__), "token.txt")).readlines()[0].strip()
 
 client.run(token, bot = True, reconnect = True)
