@@ -1,43 +1,50 @@
-import discord, random, requests, urllib.request, re
+# do not deploy till bitly credentials are removed
+
+import discord 
+import random
+import requests
+import urllib.request
+import re
 from discord.ext import commands
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+from .res import funcs as f
+
+prefix = "^"
 
 class general(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @commands.command(aliases = ["av", "pfp"])
-    async def avatar(self, ctx, user : discord.Member = None):
-        """Returns a users avatar."""
+    async def avatar(self, ctx, *args):
         adjectives = ["beautiful", "ugly", "hot", " wonderful", "gross", "gay", "cute", "disgusting"]
         
-        if not user:
+        u = await f.is_user(ctx, " ".join(args))
+
+        if not u:
             embed = discord.Embed(title = "{}'s {} avatar!".format(ctx.author, random.choice(adjectives)), color = ctx.author.colour)
             embed.set_image(url = ctx.author.avatar_url)
             await ctx.send(embed = embed)
         
         else:
-            embed = discord.Embed(title = "{}'s {} avatar!".format(user, random.choice(adjectives)), color = user.colour)
-            embed.set_image(url = user.avatar_url)
+            embed = discord.Embed(title = "{}'s {} avatar!".format(u, random.choice(adjectives)), color = u.colour)
+            embed.set_image(url = u.avatar_url)
             await ctx.send(embed = embed)
     
-    @commands.command(aliases = ["old", "archived", "oldvid", "oldvideo"])
-    async def archivedvid(self, ctx):
-        """Returns a random archived video from carrot's channel"""
+    @commands.command(aliases = ["old", "archived", "oldvideo"])
+    async def oldvid(self, ctx):
         archives = ["https://www.youtube.com/watch?v=Xxx7u0sUdUw", "https://www.youtube.com/watch?v=Udw2CroGsmk", "https://www.youtube.com/watch?v=8gDWg0_EXrU", "https://www.youtube.com/watch?v=i6rUTD0G5HA", "https://www.youtube.com/watch?v=MW8F0-9diu8", "https://www.youtube.com/watch?v=PGzoSpB3V58", "https://www.youtube.com/watch?v=sxBjqANiU_A", "https://www.youtube.com/watch?v=2X35scjhZXo", "https://www.youtube.com/watch?v=enb6oARRI-o", "https://www.youtube.com/watch?v=SBixbuj82JQ", "https://www.youtube.com/watch?v=dpanxlDHt0M", "https://www.youtube.com/watch?v=qbJz9qYBcKg", "https://www.youtube.com/watch?v=KDt-7j6aQrQ", "https://www.youtube.com/watch?v=c-USlHvcc3k"]
-        await ctx.send("Here is a random bad archived video: " + random.choice(archives))
+        await ctx.send("Here is your random video: " + random.choice(archives))
 
     @commands.command(aliases = ["staff"])
     async def apply(self, ctx):
-        """Apply for a staff position."""
         await ctx.send("Here is the link to try out our staff team. Good Luck!\nhttps://forms.gle/s2qnKWdkLyak3EJe6")
     
     @commands.command(aliases = ["shortenurl", "shorturl", "url", "link"])
     async def bitly(self, ctx, link = None):
-        """Shorten a link"""
-        username = "protected"
-        password = "protected"
+        username = ""
+        password = ""
 
         auth_res = requests.post("https://api-ssl.bitly.com/oauth/access_token", auth = (username, password))
         
@@ -63,7 +70,6 @@ class general(commands.Cog):
 
     @commands.command(aliases = ["channel", "textchannel"])
     async def channelinfo(self, ctx, channel : discord.TextChannel = None):
-        """Get info on a channel."""
         
         if channel:
             embed = discord.Embed(title = f"#{channel.name}", description = f"Showing info for <#{channel.id}>.", color = ctx.author.colour)
@@ -93,13 +99,12 @@ class general(commands.Cog):
             embed.add_field(name = "Topic", value = ctx.channel.topic)
             await ctx.send(embed = embed)
 
-    @commands.command(aliases = ["bot", "help"])
-    async def info(self, ctx):
-        """Learn about the bot"""
-        await ctx.send(embed = discord.Embed(title = "carrotbot", colour = ctx.author.color, description = "a guild specific, multi-purpose bot made in Python3\n\n**Prefix:** `;`\n**Developer:** carrot#0890\n**Other Links**: [GitHub](https://github.com/carrotguy69/carrotbot), [Command List](https://carrotguy69.github.io/carrotbot)"))
+    @commands.command(aliases = ["bot", "info"], invoke_without_command = True)
+    async def help(self, ctx):
+        await ctx.send(embed = discord.Embed(title = "carrotbot", colour = ctx.author.color, description = "a guild specific, multi-purpose bot made in Python3\n\n**Prefix:** `{}`\n**Developer:** carrot#0890\n**Other Links**: [GitHub](https://github.com/carrotguy69/carrotbot), [Command List](https://carrotguy69.github.io/carrotbot)".format(prefix)))
 
     @commands.command(aliases = ["search", "web"])
-    async def google(self, ctx, search_query):
+    async def google(self, ctx, *, search_query):
         from googlesearch import search
 
         msg = await ctx.send("Searching...")
@@ -109,7 +114,7 @@ class general(commands.Cog):
         resultnum = 0
 
         try:
-            for j in search(query, tld = "co.in", num = 5, stop = 5, pause = 1):
+            for j in search(query, tld = "co.in", num = 3, stop = 3, pause = 1):
                 resultnum += 1
                 reqs = requests.get(j)
                 soup = BeautifulSoup(reqs.text, 'html.parser')
@@ -120,7 +125,7 @@ class general(commands.Cog):
                     embed.add_field(name = f"{title}", value = f"[Follow link!]({j})")
         
         except requests.exceptions.ConnectionError:
-            await msg.edit("Oof error.\n```\nConnection aborted, RemoteDisconnected (Remote end closed connection without response)\n```") 
+            await msg.edit("Connection aborted, RemoteDisconnected (Remote end closed connection without response)") 
             
         
         await msg.edit(embed = embed, content = " ")
@@ -131,7 +136,6 @@ class general(commands.Cog):
 
     @commands.command(aliases = ["members", "usercount", "users"])
     async def membercount(self, ctx):
-        """Find the amount of members in this server"""
         embed = discord.Embed(title = ctx.guild.name, colour = ctx.author.color)
         embed.add_field(name = "All Users", value = len(ctx.guild.members))
         embed.add_field(name = "Bots", value = len([i for i in ctx.guild.members if i.bot]))
@@ -143,8 +147,9 @@ class general(commands.Cog):
         await ctx.send(embed = discord.Embed(title = "Pong!", description = f"`{round(self.client.latency *1000)}` ms", color = ctx.author.color))
 
     @commands.command(aliases = ["whois", "userinfo", "member", "memberinfo"])
-    async def user(self, ctx, *, user : discord.Member  = None):
-        """Find information about a user"""
+    async def user(self, ctx, *args):
+        
+        user = await f.is_user(ctx, " ".join(args))
         
         if not user:
             user = ctx.author
@@ -158,16 +163,20 @@ class general(commands.Cog):
         roles.append('@everyone')
         embed.add_field(name = "Join Date", value = user.joined_at.strftime("%x"))
         embed.add_field(name = "Register Date", value = user.created_at.strftime("%x"))
+        
         if user.id == 613402918774636570:
-            embed.add_field(name = "Join Position", value = f"1/{len(ctx.guild.members)}")
-        embed.add_field(name = "Join Position", value = f"{pos + 2}/{len(ctx.guild.members)}")
+            embed.add_field(name = "Join Position", value = f"1/{len(ctx.guild.members)}")     
+        
+        if user.id != 613402918774636570:
+            embed.add_field(name = "Join Position", value = f"{pos + 2}/{len(ctx.guild.members)}")
+        
         embed.add_field(name = "Roles ({})".format(len(roles)), value = " ".join(roles))
         await ctx.send(embed = embed)
 
-    @commands.command(aliases = ["randomvideo", "randomvid", "vid"])
-    async def video(self, ctx):
-        vids = ["https://www.youtube.com/watch?v=q1DYYi80xtk",  "https://www.youtube.com/watch?v=qJ7eZKBPv1c", "https://www.youtube.com/watch?v=gWcbF4E0_iU"]
-        await ctx.send("Here you go!\n" + random.choice(vids))
+    # @commands.command(aliases = ["randomvideo", "randomvid", "vid"])
+    # async def video(self, ctx):
+    #     vids = ["https://www.youtube.com/watch?v=q1DYYi80xtk",  "https://www.youtube.com/watch?v=qJ7eZKBPv1c", "https://www.youtube.com/watch?v=gWcbF4E0_iU", ]
+    #     await ctx.send("Here you go!\n" + random.choice(vids))
     
     @commands.command(aliases = ["yt"])
     async def youtube(self, ctx, *, query):
@@ -214,13 +223,18 @@ class general(commands.Cog):
             title5 = title.get_text()
 
         embed = discord.Embed(title = f'Search results for "{query}"', colour = ctx.author.color, description = f"""
-        [{title1}]({url1})
-        [{title2}]({url2})
-        [{title3}]({url3})
-        [{title4}]({url4})
-        [{title5}]({url5})
+        **1.)** [{title1}]({url1})
+        **2.)** [{title2}]({url2})
+        **3.)** [{title3}]({url3})
+        **4.)** [{title4}]({url4})
+        **5.)** [{title5}]({url5})
         """)
-        await msg.edit(embed = embed, content = "")
+        await msg.edit(embed = embed)
+    
+    @commands.command()
+    async def test1(self, ctx):
+        msg = await ctx.channel.fetch_message(865800336764436480)
+        print(msg.content)
 
 
 def setup(client):
