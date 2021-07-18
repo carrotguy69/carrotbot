@@ -17,10 +17,10 @@ class general(commands.Cog):
         self.client = client
 
     @commands.command(aliases = ["av", "pfp"])
-    async def avatar(self, ctx, *args):
+    async def avatar(self, ctx, user):
         adjectives = ["beautiful", "ugly", "hot", " wonderful", "gross", "gay", "cute", "disgusting"]
         
-        u = await f.is_user(ctx, " ".join(args))
+        u = await f.is_user(ctx, user)
 
         if not u:
             embed = discord.Embed(title = "{}'s {} avatar!".format(ctx.author, random.choice(adjectives)), color = ctx.author.colour)
@@ -147,9 +147,9 @@ class general(commands.Cog):
         await ctx.send(embed = discord.Embed(title = "Pong!", description = f"`{round(self.client.latency *1000)}` ms", color = ctx.author.color))
 
     @commands.command(aliases = ["whois", "userinfo", "member", "memberinfo"])
-    async def user(self, ctx, *args):
+    async def user(self, ctx, user):
         
-        user = await f.is_user(ctx, " ".join(args))
+        user = await await f.is_user(ctx, user)
         
         if not user:
             user = ctx.author
