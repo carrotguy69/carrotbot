@@ -32,7 +32,7 @@ class monee(commands.Cog):
             await ctx.send(embed = discord.Embed(description = "{} currently has **{}** monee!".format(u.mention, balance), colour = u.colour))
 
     @commands.cooldown(1, 3600, BucketType.user)
-    @commands.command()
+    @commands.command(aliases = ["work"])
     async def claim(self, ctx):
         await f.open_account(ctx.author)
 
@@ -67,7 +67,7 @@ class monee(commands.Cog):
             await ctx.send(embed = discord.Embed(description = "💸 Should've aimed smaller, there goes your lunch money <:sad:753369030831767622>.\n**- {} monee.**".format(amount), colour = discord.Colour(0xFF1000)))
             await f.take_money(ctx, ctx.author.id, abs(amount))
 
-    @commands.command()
+    @commands.command(aliases = ["gift", "give"])
     async def pay(self, ctx, user, amount : int):
         await f.open_account(ctx.author)
         users = await f.get_bank_data()
@@ -93,7 +93,7 @@ class monee(commands.Cog):
         except:
             await ctx.send("{}\n**{}** has payed you `{}` monee!".format(u.mention, ctx.author.name, abs(amount)))
 
-    @commands.command()
+    @commands.command(aliases = ["steal"])
     async def rob(self, ctx, user):
         await f.open_account(ctx.author)
         users = await f.get_bank_data()
