@@ -149,7 +149,7 @@ class general(commands.Cog):
     @commands.command(aliases = ["whois", "userinfo", "member", "memberinfo"])
     async def user(self, ctx, user):
         
-        user = await await f.is_user(ctx, user)
+        user = await f.is_user(ctx, user)
         
         if not user:
             user = ctx.author
